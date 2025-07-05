@@ -9,13 +9,14 @@ const AnimatedBackground = () => {
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
-    // Create a plane with a custom shader for animated gradient
+    // Create a plane with a custom shader for animated gradient and light sweep
     const geometry = new THREE.PlaneGeometry(2, 2);
     const material = new THREE.ShaderMaterial({
       uniforms: {
         u_time: { value: 0 },
         color1: { value: new THREE.Color('#141414') },
-        color2: { value: new THREE.Color('#e50914') },
+        color2: { value: new THREE.Color('#7a2323') }, // Muted, deep red
+        lightColor: { value: new THREE.Color('#fff') },
       },
       vertexShader: `
         varying vec2 vUv;
@@ -28,11 +29,14 @@ const AnimatedBackground = () => {
         uniform float u_time;
         uniform vec3 color1;
         uniform vec3 color2;
+        uniform vec3 lightColor;
         varying vec2 vUv;
         void main() {
-          float angle = 0.2 + 0.1 * sin(u_time * 0.07);
           float grad = smoothstep(0.0, 1.0, vUv.y + 0.1 * sin(u_time * 0.1 + vUv.x * 2.0));
           vec3 color = mix(color1, color2, grad * 0.7);
+          // Soft animated light sweep
+          float sweep = 0.18 * exp(-40.0 * pow(vUv.x - 0.5 - 0.25 * sin(u_time * 0.08), 2.0));
+          color = mix(color, lightColor, sweep * 0.12);
           // Vignette
           float vignette = smoothstep(0.8, 0.3, distance(vUv, vec2(0.5)));
           color = mix(color, color1, vignette * 0.7);

@@ -28,22 +28,26 @@ function App() {
     <Router>
       <motion.div initial={{ opacity: 0, y: -30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
         <AppBar
-          position="sticky"
+          position="fixed"
           color="default"
           elevation={scrolled ? 12 : 6}
           sx={{
-            mb: 4,
             background: scrolled
-              ? 'rgba(35,35,35,0.85)'
-              : 'rgba(35,35,35,0.65)',
-            boxShadow: scrolled
-              ? '0 4px 32px 0 #000a'
-              : '0 2px 16px 0 #000a',
-            backdropFilter: 'blur(12px)',
+              ? 'rgba(35,35,35,0.92)'
+              : 'rgba(35,35,35,0.82)',
+            boxShadow: '0 2px 24px 0 #000a',
+            backdropFilter: 'blur(18px)',
+            borderBottom: '1.5px solid rgba(255,255,255,0.07)',
             transition: 'background 0.3s, box-shadow 0.3s',
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            zIndex: 1200,
+            py: 0.5,
           }}
         >
-          <Toolbar>
+          <Toolbar sx={{ minHeight: 64, px: { xs: 2, sm: 4 } }}>
             <MovieIcon sx={{ mr: 2, fontSize: 36, color: '#fff' }} />
             <Typography variant="h5" component="div" sx={{ flexGrow: 1, fontWeight: 900, color: '#fff', letterSpacing: 1 }}>
               Movie Watchlist
@@ -62,10 +66,11 @@ function App() {
                   letterSpacing: 1,
                   position: 'relative',
                   transition: 'color 0.2s',
+                  background: 'none',
                   '&:hover': {
                     color: '#fff',
                     textShadow: '0 0 8px #e50914, 0 0 16px #e50914',
-                    background: 'rgba(229,9,20,0.08)',
+                    background: 'rgba(229,9,20,0.04)',
                   },
                   '&::after': location.pathname === nav.to ? {
                     content: '""',
@@ -77,7 +82,19 @@ function App() {
                     height: 3,
                     borderRadius: 2,
                     background: 'linear-gradient(90deg, #e50914 60%, #b81d24 100%)',
-                  } : {},
+                    transition: 'all 0.3s',
+                  } : {
+                    content: '""',
+                    display: 'block',
+                    position: 'absolute',
+                    left: 0,
+                    right: 0,
+                    bottom: 2,
+                    height: 3,
+                    borderRadius: 2,
+                    background: 'transparent',
+                    transition: 'all 0.3s',
+                  },
                 }}
               >
                 {nav.label}
@@ -88,7 +105,7 @@ function App() {
       </motion.div>
       {/* Animated background placeholder for Three.js/GSAP */}
       <Box id="background-animated" sx={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none' }} />
-      <Container maxWidth="md" sx={{ position: 'relative', zIndex: 1 }}>
+      <Container maxWidth="md" sx={{ position: 'relative', zIndex: 1, pt: 10 }}>
         <Routes>
           <Route path="/" element={<Watchlist />} />
           <Route path="/watched" element={<Watched />} />
