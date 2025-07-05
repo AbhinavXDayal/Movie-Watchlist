@@ -10,7 +10,7 @@ const Add = () => {
 
     const search = async (e) => {
         e.preventDefault();
-        const res = await axios.get(`https://www.omdbapi.com/?apikey=YOUR_API_KEY&s=${query}`);
+        const res = await axios.get(`https://www.omdbapi.com/?apikey=94f10745&s=${query}`);
         setResults(res.data.Search || []);
     };
 
