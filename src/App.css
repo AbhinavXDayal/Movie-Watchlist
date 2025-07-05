@@ -1,0 +1,42 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: #f4f4f4;
+}
+
+.header {
+  background: #222;
+  color: white;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+nav a {
+  margin-left: 1rem;
+  color: #61dafb;
+  text-decoration: none;
+}
+
+.container {
+  padding: 2rem;
+}
+
+.movie-card {
+  display: flex;
+  background: white;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  border-radius: 10px;
+}
+
+.movie-card img {
+  width: 100px;
+  height: auto;
+  margin-right: 1rem;
+}
+
+.controls button {
+  margin-right: 0.5rem;
+}
