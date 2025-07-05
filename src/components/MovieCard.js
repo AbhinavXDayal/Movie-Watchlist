@@ -1,21 +1,22 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { GlobalContext } from '../context/GlobalContext';
 import MovieControls from './MovieControls';
 import { Card, CardMedia, CardContent, Typography, Button, Box } from '@mui/material';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const MovieCard = ({ movie, type, disabled }) => {
     const { dispatch } = useContext(GlobalContext);
+    const [spoiler, setSpoiler] = useState(true);
 
     return (
         <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            whileHover={{ scale: 1.03, boxShadow: '0 8px 32px rgba(0,0,0,0.18)' }}
+            whileHover={{ scale: 1.04, boxShadow: '0 0 24px 2px #e5091466' }}
             transition={{ duration: 0.4 }}
-            style={{ marginBottom: 24 }}
+            style={{ marginBottom: 24, position: 'relative' }}
         >
-            <Card sx={{ display: 'flex', alignItems: 'center', borderRadius: 3, boxShadow: 3 }}>
+            <Card sx={{ display: 'flex', alignItems: 'center', borderRadius: 3, boxShadow: 3, position: 'relative', overflow: 'hidden' }}>
                 <CardMedia
                     component="img"
                     sx={{ width: 100, height: 150, objectFit: 'cover', borderRadius: 2, m: 2 }}
@@ -41,6 +42,41 @@ const MovieCard = ({ movie, type, disabled }) => {
                         )}
                     </CardContent>
                 </Box>
+                {/* Spoiler Overlay */}
+                <AnimatePresence>
+                    {spoiler && (
+                        <motion.div
+                            initial={{ opacity: 1 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.6 }}
+                            style={{
+                                position: 'absolute',
+                                inset: 0,
+                                background: 'rgba(20,20,20,0.92)',
+                                backdropFilter: 'blur(6px)',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                zIndex: 10,
+                            }}
+                        >
+                            <Typography variant="h6" sx={{ color: '#fff', mb: 2, textShadow: '0 0 8px #e50914' }}>
+                                Spoiler Hidden!
+                            </Typography>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                size="large"
+                                sx={{ fontWeight: 900, fontSize: 18, px: 4, boxShadow: '0 0 16px #e50914' }}
+                                onClick={() => setSpoiler(false)}
+                            >
+                                Reveal Movie
+                            </Button>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </Card>
         </motion.div>
     );
