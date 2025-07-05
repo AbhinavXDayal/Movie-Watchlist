@@ -7,50 +7,63 @@ const AnimatedBackground = () => {
   useEffect(() => {
     // Scene setup
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 60;
+    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+    // Create a plane with a custom shader for animated gradient
+    const geometry = new THREE.PlaneGeometry(2, 2);
+    const material = new THREE.ShaderMaterial({
+      uniforms: {
+        u_time: { value: 0 },
+        color1: { value: new THREE.Color('#141414') },
+        color2: { value: new THREE.Color('#e50914') },
+      },
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform float u_time;
+        uniform vec3 color1;
+        uniform vec3 color2;
+        varying vec2 vUv;
+        void main() {
+          float angle = 0.2 + 0.1 * sin(u_time * 0.07);
+          float grad = smoothstep(0.0, 1.0, vUv.y + 0.1 * sin(u_time * 0.1 + vUv.x * 2.0));
+          vec3 color = mix(color1, color2, grad * 0.7);
+          // Vignette
+          float vignette = smoothstep(0.8, 0.3, distance(vUv, vec2(0.5)));
+          color = mix(color, color1, vignette * 0.7);
+          gl_FragColor = vec4(color, 1.0);
+        }
+      `,
+      depthWrite: false,
+      depthTest: false,
+    });
+    const mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
 
     const renderer = new THREE.WebGLRenderer({ alpha: true });
-    renderer.setClearColor(0x000000, 0); // transparent
+    renderer.setClearColor(0x000000, 0);
     renderer.setSize(window.innerWidth, window.innerHeight);
     mountRef.current.appendChild(renderer.domElement);
 
     // Responsive
     const handleResize = () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
       renderer.setSize(window.innerWidth, window.innerHeight);
     };
     window.addEventListener('resize', handleResize);
 
-    // Particles
-    const particles = 200;
-    const geometry = new THREE.BufferGeometry();
-    const positions = [];
-    const colors = [];
-    for (let i = 0; i < particles; i++) {
-      positions.push((Math.random() - 0.5) * 200);
-      positions.push((Math.random() - 0.5) * 120);
-      positions.push((Math.random() - 0.5) * 100);
-      // Netflix red with some variation
-      const color = new THREE.Color().setHSL(0, 0.85, 0.45 + Math.random() * 0.1);
-      colors.push(color.r, color.g, color.b);
-    }
-    geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-    geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-    const material = new THREE.PointsMaterial({ size: 2.5, vertexColors: true, opacity: 0.7, transparent: true });
-    const points = new THREE.Points(geometry, material);
-    scene.add(points);
-
     // Animation
     let frameId;
-    const animate = () => {
-      points.rotation.y += 0.0015;
-      points.rotation.x += 0.0007;
+    const animate = (t) => {
+      material.uniforms.u_time.value = t * 0.001;
       renderer.render(scene, camera);
       frameId = requestAnimationFrame(animate);
     };
-    animate();
+    animate(0);
 
     // Cleanup
     return () => {
@@ -72,7 +85,7 @@ const AnimatedBackground = () => {
         pointerEvents: 'none',
         width: '100vw',
         height: '100vh',
-        opacity: 0.7,
+        opacity: 1,
       }}
     />
   );
