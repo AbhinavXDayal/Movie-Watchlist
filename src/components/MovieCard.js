@@ -12,7 +12,7 @@ const MovieCard = ({ movie, type, disabled }) => {
         <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            whileHover={{ scale: 1.04, boxShadow: '0 0 24px 2px #e5091466' }}
+            whileHover={{ scale: 1.03, boxShadow: '0 0 8px 1px #e5091444' }}
             transition={{ duration: 0.4 }}
             style={{ marginBottom: 24, position: 'relative' }}
         >

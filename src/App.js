@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link as RouterLink, useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link as RouterLink } from 'react-router-dom';
 import Watchlist from './pages/Watchlist';
 import Watched from './pages/Watched';
 import Add from './pages/Add';
@@ -15,12 +15,34 @@ const navLinks = [
 ];
 
 function App() {
-  // Highlight active nav link
   const location = window.location;
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
     <Router>
       <motion.div initial={{ opacity: 0, y: -30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-        <AppBar position="static" color="default" elevation={6} sx={{ mb: 4, background: '#232323', boxShadow: '0 2px 16px 0 #000a' }}>
+        <AppBar
+          position="sticky"
+          color="default"
+          elevation={scrolled ? 12 : 6}
+          sx={{
+            mb: 4,
+            background: scrolled
+              ? 'rgba(35,35,35,0.85)'
+              : 'rgba(35,35,35,0.65)',
+            boxShadow: scrolled
+              ? '0 4px 32px 0 #000a'
+              : '0 2px 16px 0 #000a',
+            backdropFilter: 'blur(12px)',
+            transition: 'background 0.3s, box-shadow 0.3s',
+          }}
+        >
           <Toolbar>
             <MovieIcon sx={{ mr: 2, fontSize: 36, color: '#fff' }} />
             <Typography variant="h5" component="div" sx={{ flexGrow: 1, fontWeight: 900, color: '#fff', letterSpacing: 1 }}>
@@ -64,7 +86,9 @@ function App() {
           </Toolbar>
         </AppBar>
       </motion.div>
-      <Container maxWidth="md">
+      {/* Animated background placeholder for Three.js/GSAP */}
+      <Box id="background-animated" sx={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none' }} />
+      <Container maxWidth="md" sx={{ position: 'relative', zIndex: 1 }}>
         <Routes>
           <Route path="/" element={<Watchlist />} />
           <Route path="/watched" element={<Watched />} />

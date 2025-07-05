@@ -5,6 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { GlobalProvider } from './context/GlobalContext';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
+import AnimatedBackground from './three/AnimatedBackground';
 
 const netflixTheme = createTheme({
   palette: {
@@ -38,6 +39,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <ThemeProvider theme={netflixTheme}>
     <CssBaseline />
+    <AnimatedBackground />
     <GlobalProvider>
       <App />
     </GlobalProvider>
