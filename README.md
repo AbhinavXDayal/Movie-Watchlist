@@ -22,8 +22,6 @@ npm install
 npm start
 ```
 
-The app will be available at [http://localhost:3000](http://localhost:3000).
-
 ## 🛠️ Tech Stack
 - React 19 + Context API
 - Material UI (MUI)
